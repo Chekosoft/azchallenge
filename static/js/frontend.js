@@ -5,11 +5,13 @@ angular.module('BitcoinApp', [])
 		$scope.values = {};
 		$scope.update = Date.now();
 		$scope.updating = false;
+		$scope.err = false;
 
 		$scope.update = function() {
 			$scope.updating = true;
 			$http.get('/prices.json')
 			.success(function(data, status){
+				$scope.err = false;
 				if(status == 200){
 					var results = {};
 					for(var code in data){
@@ -19,19 +21,18 @@ angular.module('BitcoinApp', [])
 					}
 					$scope.values = results;
 					$scope.update = new Date(data["date"]);
-					$scope.updating = false;
 				}
+				$scope.updating = false;
 			})
 			.error(function(data, status){
-
+				$scope.updating = false;
+				$scope.err = true;
 			});
 		}
 
 		$scope.startRetrievingValues = function(){
 			$scope.update();
-			$interval(function(){
-				$scope.update();
-			}, 15000);
+			$interval($scope.update, 15000);
 		}
 
 		$scope.getUnorderedKeys = function(hash){

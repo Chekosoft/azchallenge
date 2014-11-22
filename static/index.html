@@ -31,6 +31,10 @@
 <div class="container-fluid"  data-ng-init="startRetrievingValues()">
 	<div class="row">
 		<div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
+
+			<div class="alert alert-danger" data-ng-hide="!err">
+				<strong>Error</strong> Currency data couldn't be retrieved. You can refresh the page or wait 15 seconds.
+			</div>
 			<div class="page-header">
 				<h1 class="text-center">
 					<abbr title="Bitcoin"><span class="fa fa-btc"></span></abbr>1 costs
@@ -43,7 +47,7 @@
 			</ul>
 
 			<div class="text-center">
-				<p data-ng-hide="updating">Last update was at {{update.getHours() + ":" + update.getMinutes() + ":" + update.getSeconds()}}</p>
+				<p data-ng-hide="updating">Last update was at {{update | date:'HH:mm:ss'}}</p>
 				<p data-ng-hide="!updating">Updating values</p>
 			</div>
 		</div>
