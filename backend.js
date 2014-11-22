@@ -60,11 +60,6 @@ app.get('/prices.json', function(req, res){
 	res.set('Content-Type', 'application/json').send(values);
 });
 
-app.get('/', function(req, res){
-
-});
-
-
 pricesContainer.addCurrency('CAD');
 pricesContainer.addCurrency('USD');
 pricesContainer.addCurrency('CLP');
