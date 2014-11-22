@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-	<title>Beetcuoins!</title>
+	<title>How much 1 Bitcoin costs?</title>
 	<meta charset="utf-8">
 	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
@@ -16,7 +16,8 @@
 <nav class="navbar navbar-default" role="navigation">
 	<div class="container-fluid">
 		<div class="navbar-header">
-			<a class="navbar-brand">Beetcuoins!</a>
+			<a class="navbar-brand hidden-xs">How much 1 Bitcoin costs?</a>
+			<a class="navbar-brand visible-xs-inline">How much...?</a>
 		</div>
 
 		<div class="navbar-right">
@@ -32,14 +33,19 @@
 		<div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
 			<div class="page-header">
 				<h1 class="text-center">
-					1 <abbr class="Bitcoin"><span class="fa fa-btc"></span></abbr> costs
+					<abbr title="Bitcoin"><span class="fa fa-btc"></span></abbr>1 costs
 				</h1>
 			</div>
 			<ul class="list-group text-center" data-ng-model="values">
-				<li data-ng-repeat="(key, value) in values" class="list-group-item">
-					<h4>{{key}} ${{value}}</h4>
+				<li data-ng-repeat="currency in getUnorderedKeys(values)" class="list-group-item">
+					<h4>{{currency}} ${{values[currency]}}</h4>
 				</li>
 			</ul>
+
+			<div class="text-center">
+				<p data-ng-hide="updating">Last update was at {{update.getHours() + ":" + update.getMinutes() + ":" + update.getSeconds()}}</p>
+				<p data-ng-hide="!updating">Updating values</p>
+			</div>
 		</div>
 	</div>
 </div>

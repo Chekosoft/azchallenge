@@ -18,12 +18,12 @@ angular.module('BitcoinApp', [])
 						}
 					}
 					$scope.values = results;
-					$scope.update = data["date"];
+					$scope.update = new Date(data["date"]);
 					$scope.updating = false;
 				}
 			})
 			.error(function(data, status){
-				
+
 			});
 		}
 
@@ -32,6 +32,13 @@ angular.module('BitcoinApp', [])
 			$interval(function(){
 				$scope.update();
 			}, 15000);
+		}
+
+		$scope.getUnorderedKeys = function(hash){
+			if(!hash){
+				return {}
+			}
+			return Object.keys(hash);
 		}
 	}
 ]);
