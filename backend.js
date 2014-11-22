@@ -15,31 +15,54 @@ var pricesContainer = {
 		util.log('Adding currency code ' + currency_code);
 		pricesContainer.prices[currency_code] = null;
 	},
-	updatePrices: function(){
-		for(var code in pricesContainer.prices){
+	updatePrices: function() {
+		for(var code in pricesContainer.prices) {
 			util.log('Asking for ' + code + ' price');
 			var response = request.get(util.format(pricesContainer.endpoint, code));
+
 			response.on('response', function(currencyCode, response){
-				response.on('data', function(currencyCode, data){
-					if(response.statusCode == 200){
-						util.log(currencyCode + ' price: ' + data);
-						util.log('Adding updated value to currency list');
-						pricesContainer.prices[currencyCode] = parseFloat(data);
-					} else{
-						util.log('Not the expected answer for ' + currencyCode + ', preserving current price.');
-					}
-				}.bind(response, currencyCode));
+				if(response.statusCode == 200) {
+					util.log(util.format('Obtained price for %s', currencyCode));
+					pricesContainer.lastUpdate = Date.now();
+				} 
+				else {
+					util.log('Not the expected answer for ' + currencyCode + ', preserving current price.');
+				}
 			}.bind(response, code));
 
-			response.on('error', function(code, error){
+			response.on('data', function(currencyCode, data){
+				var value = parseFloat(data);
+				util.log("For " + currencyCode);
+				if(isNaN(value)) {
+
+					util.log('Preserving last value due parsing error');
+				}
+				else {
+					util.log('Adding updated value to currency list (' + value + ')');
+					pricesContainer.prices[currencyCode] = value;
+				}
+			}.bind(response, code));
+
+			response.on('error', function(currencyCode, error){
 				util.error('Error retrieving ' + code + ' price: ' + error);
-				util.error('Keeping current value');
-			});
+				util.error('Preserving current value');
+				pricesContainer.lastUpdate = Date.now();
+			}.bind(response, code));
 		}
-		pricesContainer.lastUpdate = Date.now();
-		util.log('Updated prices at ' + pricesContainer.lastUpdate.toString());
 	}
 }
+
+app.use(express.static(__dirname + '/static'));
+
+app.get('/prices.json', function(req, res){
+	var values = pricesContainer.prices;
+	values['time'] = pricesContainer.lastUpdate;
+	res.set('Content-Type', 'application/json').send(values);
+});
+
+app.get('/', function(req, res){
+
+});
 
 
 pricesContainer.addCurrency('CAD');
@@ -49,8 +72,11 @@ pricesContainer.addCurrency('CLP');
 util.log('Obtaining initial prices list');
 pricesContainer.updatePrices();
 
-util.log('Now programming loop');
+util.log('Now programming retrieval task');
 
 var periodicUpdate = setInterval(function(){
 		pricesContainer.updatePrices();
-	}, 60*1000);
+}, 60*1000);
+
+app.listen(1337);
+util.log('express is up and listening');
