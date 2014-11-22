@@ -3,6 +3,7 @@
 var express = require('express');
 var request = require('request');
 var util = require('util');
+var _ = require('underscore');
 
 var app = express();
 
@@ -10,10 +11,10 @@ var pricesContainer = {
 	endpoint: 'https://api.bitcoinaverage.com/ticker/global/%s/last',
 	prices: {},
 	lastUpdate: Date.now(),
-	addCurrency: function(currency_code){
-		currency_code = currency_code.toUpperCase();
-		util.log('Adding currency code ' + currency_code);
-		pricesContainer.prices[currency_code] = null;
+	addCurrency: function(currencyCode){
+		currencyCode = currencyCode.toUpperCase();
+		util.log('Adding currency code ' + currencyCode);
+		pricesContainer.prices[currencyCode] = null;
 	},
 
 	updatePrices: function() {
@@ -50,21 +51,16 @@ var pricesContainer = {
 				pricesContainer.lastUpdate = Date.now();
 			}.bind(response, code));
 		}
-	},
-	jsonReturn: function(){
-		var returnValues = {};
-		for(var currency in pricesContainer.prices){
-			returnValues[currency] = pricesContainer.prices[currency];
-		}
-		returnValues["date"] = pricesContainer.lastUpdate
-		return returnValues;
 	}
 }
 
 app.use(express.static(__dirname + '/static'));
 
 app.get('/prices.json', function(req, res){
-	res.set('Content-Type', 'application/json').send(pricesContainer.jsonReturn());
+	var prices = _.clone(pricesContainer.prices);
+	_.extend(prices, {'date': pricesContainer.lastUpdate});
+	res.set('Content-Type', 'application/json')
+	.send(prices);
 });
 
 pricesContainer.addCurrency('CAD');
