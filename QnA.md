@@ -31,7 +31,7 @@ What was the hardest part?
 
 If you could go back and give yourself advice at the beginning of the project, what would it be?
 
-> Try to learn more about the Node.js platform before starting coding.
+> Try to learn more about the Node.js platform before starting with the coding tasks.
 
 
 Did you learn anything new?
@@ -46,4 +46,4 @@ Do you feel that this assignment allowed you to showcase your abilities effectiv
 
 Are there any significant web development-related skills that you possess that weren't demonstrated in this excercise? If so, what are they?
 
-> Yes. I specialize in Python web programming. I also know SQL and some NoSQL basics (MongoDB).
+> Yes. I specialize in Python web programming. I also know SQL and some NoSQL basics (specifically MongoDB).
